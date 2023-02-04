@@ -10,9 +10,16 @@ type Props = {
 export function PlayerCard({ name, onRemove }: Props) {
   return (
     <Container>
-      <Icon name="person" size={32} />
+      <Icon
+        name="person"
+        size={32}
+      />
       <Name>{name}</Name>
-      <ButtonIcon icon="close" type="SECONDARY" onPress={onRemove} />
+      <ButtonIcon
+        icon="close"
+        type="SECONDARY"
+        onPress={onRemove}
+      />
     </Container>
   );
 }
