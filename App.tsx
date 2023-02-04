@@ -1,5 +1,5 @@
 import { StatusBar } from 'react-native';
-import { ThemeProvider } from 'styled-components';
+import { ThemeProvider } from 'styled-components/native';
 import {
   useFonts,
   Roboto_400Regular,

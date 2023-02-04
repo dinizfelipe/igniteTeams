@@ -25,10 +25,10 @@ export const HeaderList = styled.View`
   margin: 32px 0 12px;
 `;
 
-export const NumbersOfPlayers = styled.Text`
+export const NumberOfPlayers = styled.Text`
   ${({ theme }) => css`
     color: ${theme.COLORS.GRAY_200};
     font-family: ${theme.FONT_FAMILY.BOLD};
-    font-size: ${theme.FONT_SIZE.SM};
+    font-size: ${theme.FONT_SIZE.SM}px;
   `}
 `;
