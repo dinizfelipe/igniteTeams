@@ -1,4 +1,4 @@
-import { useState , useCallback } from 'react';
+import { useState, useCallback } from 'react';
 import { FlatList } from 'react-native';
 import { useNavigation, useFocusEffect } from '@react-navigation/native';
 
@@ -20,19 +20,25 @@ export function Groups() {
     navigation.navigate('new');
   }
 
-  async function fetchGroups(){
+  async function fetchGroups() {
     try {
-     const data = await groupsGetAll();
-     setGroups(data)
+      const data = await groupsGetAll();
+      setGroups(data);
     } catch (error) {
       console.log(error);
     }
   }
- 
-  useFocusEffect(useCallback(()=>{
-   fetchGroups(); 
-  }, []));
-  
+
+  function handleOpenGroup(group: string) {
+    navigation.navigate('players', { group });
+  }
+
+  useFocusEffect(
+    useCallback(() => {
+      fetchGroups();
+    }, [])
+  );
+
   return (
     <Container>
       <Header />
@@ -43,7 +49,12 @@ export function Groups() {
       <FlatList
         data={groups}
         keyExtractor={(item) => item}
-        renderItem={({ item }) => <GroupCard title={item} />}
+        renderItem={({ item }) => (
+          <GroupCard
+            title={item}
+            onPress={() => handleOpenGroup(item)}
+          />
+        )}
         contentContainerStyle={groups.length == 0 && { flex: 1 }}
         ListEmptyComponent={() => (
           <ListEmpty message="Que tal cadastrar a primeira turma?" />
