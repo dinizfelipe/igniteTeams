@@ -1,11 +1,12 @@
-import { useState, useEffect } from 'react';
-import { Alert, FlatList } from 'react-native';
+import { useState, useEffect, useRef } from 'react';
+import { Alert, FlatList, TextInput } from 'react-native';
 import { useRoute } from '@react-navigation/native';
 
 import { AppError } from '@utils/AppError';
 
 import { playerAddByGroup } from '@storage/player/playerAddByGroup';
 import { playersGetByGroupAndTeam } from '@storage/player/playerGetByGroupAndTeam';
+import { PlayerStorageDTO } from '@storage/player/PlayerStorageDTO';
 
 import { Header } from '@components/Header';
 import { Button } from '@components/Button';
@@ -17,8 +18,6 @@ import { Filter } from '@components/Filter';
 import { PlayerCard } from '@components/PlayerCard';
 
 import { Container, Form, HeaderList, NumberOfPlayers } from './styles';
-import { PlayerStorageDTO } from '@storage/player/PlayerStorageDTO';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 
 type RouteParams = {
   group: string;
@@ -32,6 +31,8 @@ export function Players() {
   const route = useRoute();
 
   const { group } = route.params as RouteParams;
+
+  const newPlayerNameInputRef = useRef<TextInput>(null);
 
   async function handleAddPlayer() {
     if (newPlayerName.trim().length === 0) {
@@ -47,6 +48,9 @@ export function Players() {
 
     try {
       await playerAddByGroup(newPlayer, group);
+      newPlayerNameInputRef.current?.blur();
+
+      setNewPlayerName('');
       fetchPlayersByTeam();
     } catch (error) {
       if (error instanceof AppError) {
@@ -71,7 +75,7 @@ export function Players() {
   }
 
   useEffect(() => {
-    fetchPlayersByTeam;
+    fetchPlayersByTeam();
   }, [team]);
 
   return (
@@ -85,9 +89,13 @@ export function Players() {
 
       <Form>
         <Input
+          inputRef={newPlayerNameInputRef}
           onChangeText={setNewPlayerName}
+          value={newPlayerName}
           placeholder="Nome da pessoa"
           autoCorrect={false}
+          onSubmitEditing={handleAddPlayer}
+          returnKeyType={'done'}
         />
         <ButtonIcon
           icon="add"
