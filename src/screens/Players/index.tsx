@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Alert, FlatList } from 'react-native';
 import { useRoute } from '@react-navigation/native';
 
@@ -18,6 +18,7 @@ import { PlayerCard } from '@components/PlayerCard';
 
 import { Container, Form, HeaderList, NumberOfPlayers } from './styles';
 import { PlayerStorageDTO } from '@storage/player/PlayerStorageDTO';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 type RouteParams = {
   group: string;
@@ -46,6 +47,7 @@ export function Players() {
 
     try {
       await playerAddByGroup(newPlayer, group);
+      fetchPlayersByTeam();
     } catch (error) {
       if (error instanceof AppError) {
         Alert.alert('Nova pessoa', error.message);
@@ -58,8 +60,8 @@ export function Players() {
 
   async function fetchPlayersByTeam() {
     try {
-      const playerByTeam = await playersGetByGroupAndTeam(group, team);
-      setPlayers(playerByTeam);
+      const playersByTeam = await playersGetByGroupAndTeam(group, team);
+      setPlayers(playersByTeam);
     } catch (error) {
       Alert.alert(
         'Pessoas',
@@ -67,6 +69,10 @@ export function Players() {
       );
     }
   }
+
+  useEffect(() => {
+    fetchPlayersByTeam;
+  }, [team]);
 
   return (
     <Container>
@@ -106,10 +112,10 @@ export function Players() {
       </HeaderList>
       <FlatList
         data={players}
-        keyExtractor={(item) => item}
+        keyExtractor={(item) => item.name}
         renderItem={({ item }) => (
           <PlayerCard
-            name={item}
+            name={item.name}
             onRemove={() => {}}
           />
         )}
